@@ -1,0 +1,32 @@
+
+#header {
+	padding-left: 20px;
+}
+
+#map {
+	width: 100%;
+	height: 600px;
+	border: 1px solid grey;
+}
+
+.navbar-center
+{
+    width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.search-results {
+	
+	background-color: lightgrey;
+	padding: 15px 25px;
+}
+
+.result-card {
+	width: 100%;
+	height: 200px;
+	border: 1px solid grey;
+	margin-bottom: 15px;
+	background-color: white;
+	padding: 4px;
+}
