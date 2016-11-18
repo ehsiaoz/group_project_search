@@ -39,10 +39,8 @@
 			<div class="row">
 				<!-- Left Map Section -->
 				<div class="col-sm-4">
-					<div id="map">
-						
-					</div>
-				</div>
+					<div id="map"></div>
+    			</div>
 				<!-- Main Content Section -->
 				<div class="col-sm-8">
 					<!-- Search Panel -->
@@ -50,12 +48,12 @@
 						<div class="col">
 							<div class="panel panel-default">
 							  <div class="panel-body">
-								    <form class="navbar-form navbar-center" role="search" >
+								    <div class="navbar-form navbar-center" role="search" >
 									  <div class="form-group">
-									    <input type="text" class="form-control" placeholder="Enter Zipcode">
+									    <input type="text" class="form-control" placeholder="Enter Zipcode" id="location-input">
 									  </div>
-									  <button type="submit" class="btn btn-default">Search</button>
-									</form>
+									  <button class="btn btn-default" id=search-button>Search</button>
+									</div>
 						  		</div>
 							</div>
 						</div>
@@ -90,6 +88,9 @@
 	
 
 <script src="assets/javascript/plumber.js"></script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbmAefrpT0YSqgufXAyKg8Stl1CmxqZpI&callback=initMap">
+    </script>
 
 </body>
 </html>
