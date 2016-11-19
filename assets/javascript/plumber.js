@@ -1,24 +1,39 @@
-//Request token from Yelp==============================================
-				
-									  
+//Global Variables========================================
+
+var locationsGeo = [];
+
 
 //Functions========================================================================================
 
+$(document).ready(function() {
+
+//Buttons===========================
+		$('#search-button').on('click', function() {
+			$('#search-results').empty();
+			yelpSearch();
+	});
+
+});
+
+
 //Function to build and append search results returned from yelp search api to the DOM
 
-function resultBuilder(data) {
-	console.log("ResultBuilder: ", data);
-	data.businesses.forEach(function(biz, i){
+function resultBuilder(yelpObject) {
+
+	console.log("ResultBuilder: ", yelpObject);
+
+	//Create search result cards
+	yelpObject.businesses.forEach(function(biz, i){
 		
 		var business = {
-			name: data.businesses[i].name,
-			rating: data.businesses[i].rating,
-			thumb_url: data.businesses[i].image_url,
-			snippet_text: data.businesses[i].snippet_text,
-			geo_lat: data.businesses[i].location.coordinate.latitude,
-			geo_lng: data.businesses[i].location.coordinate.longitude,
-			address: data.businesses[i].location.display_address,
-			phone: data.businesses[i].display_phone,
+			name: yelpObject.businesses[i].name,
+			rating: yelpObject.businesses[i].rating,
+			thumb_url: yelpObject.businesses[i].image_url,
+			snippet_text: yelpObject.businesses[i].snippet_text,
+			geo_lat: yelpObject.businesses[i].location.coordinate.latitude,
+			geo_lng: yelpObject.businesses[i].location.coordinate.longitude,
+			address: yelpObject.businesses[i].location.display_address,
+			phone: yelpObject.businesses[i].display_phone,
 		}
 		
 		console.log(biz);
@@ -43,14 +58,39 @@ function resultBuilder(data) {
 								"<div class='col-xs-3' id='thumbnail'>"+ thumbnail + "</div>" + 
 								"<div class='col-xs-9' id='mainText'>"+ bizSnippet + bizPhone +"</div>");
 
+		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
+ 			
+
+		
+
+	//Append Search results to the DOM
+	$('#search-results').append(businessListing);
+
+
+
 	
-		$('#search-results').append(businessListing);
+
 	});
+
+	var mapDiv = document.getElementById('map'); 
+        var mapOptions = {
+        	center: new google.maps.LatLng (41.9652791, -87.6756278),	
+	        zoom: 12,
+          	mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(mapDiv, mapOptions);
+	// var bounds = new google.maps.latlngBounds ();
+        for (var i=0; i<locationsGeo.length; i++) {
+        	var marker = new google.maps.Marker({position: locationsGeo[i].latlng, map:map});
+
+        // 	bounds.extend (locations[i].latlng);
+
+        }
 	
 }
 
 
-//function to trigger a GET Request to Yelp Search API using zipcode entered from user===========
+//Function to trigger a GET Request to Yelp Search API using zipcode entered from user===========
 function yelpSearch () {
 
 	var auth = {
@@ -98,41 +138,57 @@ function yelpSearch () {
 		'data' : parameterMap,
 		'cache' : true,
 		'dataType' : 'jsonp',
-		'jsonpCallback' : 'cb',
-		'success' : function(data, textStats, XMLHttpRequest) {
-					  resultBuilder(data);
-					}
+		'jsonpCallback' : 'cb'
+		
+		}).done(function(data) {
+
+				resultBuilder(data);
 	});
 
-}
+};
 
-//Create a google map with businesses plotted
+
 function initMap() {
         var mapDiv = document.getElementById('map'); 
         var mapOptions = {
-        	center: new google.maps.latlng (41.9464283, 41.9464283),	
-	        zoom: 5,
-          	mapTypeId: google.maps.Map(mapDiv, mapOptions)
+        	center: new google.maps.LatLng (41.9652791, -87.6756278),	
+	        zoom: 12,
+          	mapTypeId: google.maps.MapTypeId.ROADMAP
         };
+        var map = new google.maps.Map(mapDiv, mapOptions);
+        
+ 		// locationsGeo.push ( {latlng: new google.maps.LatLng(41.9464283, -87.7074089)} );
+ 		// locationsGeo.push ( {latlng: new google.maps.LatLng(41.9539560, -87.713707)});
+ 		console.log("Array");
+ 		console.log(locationsGeo);
 
-        var locations = [];
- 		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9464283, 41.9464283)} );
- 		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9539560, -87.713707)} );
+        
+        // map.fitBounds(bounds);
+     
+      }
 
-        var bounds = new google.maps.latlngBounds ();
-        for (var i=0; i<locations.length; i++) {
-        	var marker = new google.maps.Marker({position: location[i].latlng, map:map, title:location[i].name});
-        	bounds.extend (locations[i].latlng);
+window.onload = initMap;
 
-        }
-        map.fitBounds(bounds);
-}
+//Create a google map with businesses plotted
+// function initMap() {
+//         var mapDiv = document.getElementById('map'); 
+//         var mapOptions = {
+//         	center: new google.maps.LatLng (41.9464283, 41.9464283),	
+// 	        zoom: 5,
+//           	mapTypeId: google.maps.mapTypeId.ROADMAP
+//         };
+//         var map = new google.maps.Map(mapDiv, mapOptions);
+        
+//         var locations = [];
+//  		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9464283, 41.9464283)} );
+//  		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9539560, -87.713707});
 
-//Buttons===========================
+//         // var bounds = new google.maps.latlngBounds ();
+//         // for (var i=0; i<locations.length; i++) {
+//         // 	var marker = new google.maps.Marker({position: location[i].latlng, map:map, title:location[i].name});
+//         // 	bounds.extend (locations[i].latlng);
 
-$('#search-button').on('click', function() {
-	$('#search-results').empty();
-	yelpSearch();
+//         // }
+//         // map.fitBounds(bounds);
+// }
 
-
-});
