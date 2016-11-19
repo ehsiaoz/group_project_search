@@ -35,6 +35,7 @@ function resultBuilder(yelpObject) {
 			geo_lng: yelpObject.businesses[i].location.coordinate.longitude,
 			address: yelpObject.businesses[i].location.display_address,
 			phone: yelpObject.businesses[i].display_phone,
+			url: yelpObject.businesses[i].url,
 		}
 		
 		console.log(biz);
@@ -47,7 +48,7 @@ function resultBuilder(yelpObject) {
 		console.log(business.snippet_text);
 		console.log(business.thumb_url);
 
-		var bizName = "<a href=\"http://yelp.com\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
+		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
 		var bizSnippet = "<p>" + business.snippet_text + "</p>";
 		var bizPhone = "<p>" + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
