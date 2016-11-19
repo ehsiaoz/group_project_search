@@ -1,13 +1,7 @@
-
+/*Header elements===============================*/
 #header {
 	padding-left: 20px;
 
-}
-
-#map {
-	width: 100%;
-	height: 800px;
-	border: 1px solid grey;
 }
 
 .navbar {
@@ -22,9 +16,31 @@
     margin: auto;
 }
 
+
+/*map elements==================================*/
+#map {
+	width: 100%;
+	height: 800px;
+	border: 1px solid grey;
+}
+
+
+/*search bar elements==================================*/
 .panel-body {
 	background-color: #fc0;
 }
+
+.form-group {
+	width: 80%;
+}
+
+#location-input {
+	width: 100%;
+}
+
+
+/*main content elements==================================*/
+
 
 .row {
     margin-right: 0px;
@@ -51,10 +67,3 @@
 	max-width: 110px;
 }
 
-.form-group {
-	width: 80%;
-}
-
-#location-input {
-	width: 100%;
-}
