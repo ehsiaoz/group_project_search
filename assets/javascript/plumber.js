@@ -49,8 +49,8 @@ function resultBuilder(yelpObject) {
 		// console.log(business.thumb_url);
 
 		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
-		var bizSnippet = "<p>" + business.snippet_text + "</p>";
-		var bizPhone = "<p>" + business.phone + "</p>";
+		var bizSnippet = "<p>\"" + business.snippet_text + "\"</p>";
+		var bizPhone = "<p>(tel) " + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
 
 		// console.log("This is bizName: " + bizName);
