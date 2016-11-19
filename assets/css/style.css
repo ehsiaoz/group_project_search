@@ -36,3 +36,8 @@
 	background-color: white;
 	padding: 4px;
 }
+
+.thumbnail {
+	max-height: 110px;
+	max-width: 110px;
+}

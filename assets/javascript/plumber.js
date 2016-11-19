@@ -8,8 +8,9 @@ var locationsGeo = [];
 $(document).ready(function() {
 
 //Buttons===========================
-		$('#search-button').on('click', function() {
+		$('#search-button').on('click', function onclick() {
 			$('#search-results').empty();
+			locationsGeo = [];
 			yelpSearch();
 	});
 
@@ -28,7 +29,7 @@ function resultBuilder(yelpObject) {
 		var business = {
 			name: yelpObject.businesses[i].name,
 			rating: yelpObject.businesses[i].rating,
-			thumb_url: yelpObject.businesses[i].image_url,
+			thumb_url: yelpObject.businesses[i].image_url || 'assets/images/noimage.jpg',
 			snippet_text: yelpObject.businesses[i].snippet_text,
 			geo_lat: yelpObject.businesses[i].location.coordinate.latitude,
 			geo_lng: yelpObject.businesses[i].location.coordinate.longitude,
@@ -43,8 +44,9 @@ function resultBuilder(yelpObject) {
 		console.log(business.geo_lat);
 		console.log(business.geo_lng);
 		console.log(business.phone);
+		console.log(business.snippet_text);
+		console.log(business.thumb_url);
 
-		//<a id="my-anchor"><h1>..</h1></a>
 		var bizName = "<a href=\"http://yelp.com\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
 		var bizSnippet = "<p>" + business.snippet_text + "</p>";
 		var bizPhone = "<p>" + business.phone + "</p>";
@@ -61,31 +63,43 @@ function resultBuilder(yelpObject) {
 		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
  			
 
-		
-
 	//Append Search results to the DOM
 	$('#search-results').append(businessListing);
-
-
-
 	
 
 	});
 
+	//Create map markers on google map
 	var mapDiv = document.getElementById('map'); 
-        var mapOptions = {
-        	center: new google.maps.LatLng (41.9652791, -87.6756278),	
-	        zoom: 12,
-          	mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(mapDiv, mapOptions);
-	// var bounds = new google.maps.latlngBounds ();
-        for (var i=0; i<locationsGeo.length; i++) {
-        	var marker = new google.maps.Marker({position: locationsGeo[i].latlng, map:map});
+    var mapOptions = {
+    	center: new google.maps.LatLng (41.9652791, -87.6756278),	
+        zoom: 12,
+      	mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(mapDiv, mapOptions);
+     //create empty LatLngBounds object
+	var bounds = new google.maps.LatLngBounds();
+	var infowindow = new google.maps.InfoWindow();  
 
-        // 	bounds.extend (locations[i].latlng);
+    for (var i=0; i<locationsGeo.length; i++) {
+    	var marker = new google.maps.Marker({position: locationsGeo[i].latlng, map:map});
 
-        }
+	  //extend the bounds to include each marker's position
+	  bounds.extend(marker.position);
+
+	  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+	    return function() {
+	      infowindow.setContent(locationsGeo[i][0]);
+	      infowindow.open(map, marker);
+	    }
+	  })(marker, i));
+	}
+
+	//now fit the map to the newly inclusive bounds
+	map.fitBounds(bounds);
+
+
+	        
 	
 }
 
@@ -142,6 +156,7 @@ function yelpSearch () {
 		
 		}).done(function(data) {
 
+			console.log("this is data inside request: ", data);
 				resultBuilder(data);
 	});
 
@@ -165,7 +180,7 @@ function initMap() {
         
         // map.fitBounds(bounds);
      
-      }
+}
 
 window.onload = initMap;
 
