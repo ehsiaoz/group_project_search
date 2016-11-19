@@ -16,6 +16,12 @@
     margin: auto;
 }
 
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
 .search-results {
 	
 	background-color: lightgrey;
