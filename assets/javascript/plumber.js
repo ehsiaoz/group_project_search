@@ -38,23 +38,23 @@ function resultBuilder(yelpObject) {
 			url: yelpObject.businesses[i].url,
 		}
 		
-		console.log(biz);
-		console.log(business.name);
-		console.log(business.address);
-		console.log(business.rating);
-		console.log(business.geo_lat);
-		console.log(business.geo_lng);
-		console.log(business.phone);
-		console.log(business.snippet_text);
-		console.log(business.thumb_url);
+		// console.log(biz);
+		// console.log(business.name);
+		// console.log(business.address);
+		// console.log(business.rating);
+		// console.log(business.geo_lat);
+		// console.log(business.geo_lng);
+		// console.log(business.phone);
+		// console.log(business.snippet_text);
+		// console.log(business.thumb_url);
 
 		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
 		var bizSnippet = "<p>" + business.snippet_text + "</p>";
 		var bizPhone = "<p>" + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
 
-		console.log("This is bizName: " + bizName);
-		console.log("This is bizPhone: ", bizPhone);
+		// console.log("This is bizName: " + bizName);
+		// console.log("This is bizPhone: ", bizPhone);
 		
 		var businessListing = $('<div>').addClass('row result-card').append(
 								bizName,
@@ -167,8 +167,8 @@ function yelpSearch () {
 function initMap() {
         var mapDiv = document.getElementById('map'); 
         var mapOptions = {
-        	center: new google.maps.LatLng (41.9652791, -87.6756278),	
-	        zoom: 12,
+        	center: new google.maps.LatLng (40.1747708, -101.0129668),	
+	        zoom: 5,
           	mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(mapDiv, mapOptions);
