@@ -42,6 +42,25 @@
 	width: 100%;
 }
 
+#errorCode {
+    font-weight: bolder;
+}
+
+.btn {
+    background-color: #c4204b;
+    color: #fff;
+    border-color: #b12747 #8f1f39 #8f1f39;
+}
+
+.btn:hover { 
+    background-color: #df3864; 
+    color: #fff;
+}
+
+.btn:active { 
+    background-color: black; 
+    color: #fff;
+}
 
 /*main content elements==================================*/
 

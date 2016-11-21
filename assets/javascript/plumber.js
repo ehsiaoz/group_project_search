@@ -1,30 +1,94 @@
 //Global Variables========================================
 
 var locationsGeo = [];
+var searchLocation = "";
 
 
 //Functions========================================================================================
 
-$(window).load(function(){
-        $('#home').modal('show');
-    });
-
 $(document).ready(function() {
 
-//Buttons===========================
+	//Buttons===========================
 
-//Search Button
-$('#page-search-button').on('click', function onclick() {
-	$('#search-results').empty();
-	locationsGeo = [];
-	yelpSearch();
+	//Search Button on page
+	$('#page-search-button').on('click', function onclick() {
+
+		if ($('#modal-find-input').val().trim() === "" || $('#page-location-input').val().trim() === "") {
+
+			$('#form-error-msg').html("* Required Field");
+		}
+
+		else {
+
+			$('#search-results').empty();
+			$('#search-area').empty();
+			locationsGeo = [];
+
+			var searchTerm = $('#modal-find-input').val().trim();
+			searchLocation = $('#page-location-input').val().trim();
+
+			console.log("You are searching for " + searchTerm + " near " + searchLocation);
+			yelpSearch(searchTerm, searchLocation);
+
+		};
+
+		
+	});
+
+	//Search Button in modal
+	$('#search-button-modal').on('click', function onclick() {
+		$('#search-results').empty();
+		locationsGeo = [];
+		modal.style.display = "none";
+
+		var searchTerm = $('#modal-find-input').val().trim();
+		searchLocation = $('#modal-near-input').val().trim(); 
+		var searchLatitude = searchLongitude = '';
+
+		// if(searchTerm == ''){
+		// 	console.log("No search term entered..");
+		// 	return;
+		// }
+
+		// if ($('#').){//nearby checkbox is checked...
+		// 	var geoSuccess = function(position) {
+		// 		searchLatitude = position.coords.latitude;
+		// 		searchLongitude = position.coords.longitude;
+		// 	};
+		// 	navigator.geolocation.getCurrentPosition(geoSuccess, geoFailure);
+		// 	console.log("You are searching for " + searchTerm + " near " + searchLatitude + "," + searchLongitude);
+		// 	yelpSearch(searchTerm, searchLocation);
+		// }
+		// else{
+		// 	if(searchLocation == ''){
+		// 		console.log("error : no location entered...");
+		// 		// error handling code here
+		// 		return;
+		// 	}
+			console.log("You are searching for " + searchTerm + " near " + searchLocation);
+			yelpSearch(searchTerm, searchLocation);
+
+
+		// }
+
 });
+
+
+
+//Forms==============================
 
 //Autoselection value in location input field on click
  $('#page-location-input').click( function highlight() {
     $(this).select();
   });
 
+$('#modal-find-input').click( function highlight() {
+    $(this).select();
+  });
+
+$('#modal-near-input').click( function highlight() {
+    $(this).select();
+  });
 
 //Modal================================
 // Get the modal
@@ -143,16 +207,13 @@ function resultBuilder(yelpObject) {
 	}
 
 	//now fit the map to the newly inclusive bounds
-	map.fitBounds(bounds);
-
-
-	        
+	map.fitBounds(bounds);      
 	
 }
 
 
 //Function to trigger a GET Request to Yelp Search API using zipcode entered from user===========
-function yelpSearch () {
+function yelpSearch (searchTerm, searchLocation) {
 
 	var auth = {
 		consumerKey : "Uy18Nj8CANiQaNqh6CYurA",
@@ -162,8 +223,9 @@ function yelpSearch () {
 		serviceProvider : {signatureMethod : "HMAC-SHA1"}
 		};
 
-	var terms = 'plumber';
-	var near = $('#page-location-input').val().trim();
+	// var terms = $('#modal-find-input').val().trim();
+	// console.log("This is term: " + terms);
+	// var near = $('#page-location-input').val().trim();
 
 	var accessor = {
 			consumerSecret : auth.consumerSecret,
@@ -171,8 +233,8 @@ function yelpSearch () {
 		};
 
 	parameters = [];
-	parameters.push(['term', terms]);
-	parameters.push(['location', near]);
+	parameters.push(['term', searchTerm]);
+	parameters.push(['location', searchLocation]);
 	parameters.push(['callback', 'cb']);
 	parameters.push(['oauth_consumer_key', auth.consumerKey]);
 	parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
@@ -200,13 +262,43 @@ function yelpSearch () {
 		'cache' : true,
 		'dataType' : 'jsonp',
 		'jsonpCallback' : 'cb'
-		
-		}).done(function(data) {
+		})
+
+		//If the request is successful
+		.done(function(data) {
 
 			console.log("this is data inside request: ", data);
-				resultBuilder(data);
-	});
+			resultBuilder(data);
+		})
 
+		//if the request fails append error message with error code.
+		.fail(function(data){
+
+			console.log("oops : ", data);
+			var errMsg = $('<div>').addClass('row').append(
+				
+				"<div class='col-xs-12' id='errorMsg'>" + 
+				"<span id=errorCode>Error message: " + 
+				data.status + 
+				"</span>." + "<br><br>" + 
+				"Sorry, but we didn't understand the location you entered. We accept locations in the following forms: "+ 
+				"<br><br>" + 
+				" - 1200 N. Michigan Ave, Chicago, IL" + "<br>" + 
+				" - Chicago, IL" + "<br>" + 
+				" - Chicago, IL 60640" + "<br>" + 
+				" - 60640" + "<br><br>" + 
+				"Also, it's possible we don't have a listing for \"" + searchLocation + "\". In that case, you should try adding a zip, or try a larger nearby city." +"</div>"); 
+
+			//Append Search results to the DOM
+			$('#search-results').append(errMsg);
+
+		})
+
+		//regardless or whether call was successful or failed..console.log response.
+		.always(function(data){
+			console.log(data);
+
+		});
 };
 
 
