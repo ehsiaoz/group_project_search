@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Plumber Finder</title>
+	<title>Pley</title>
+	<script src='https://code.jquery.com/jquery-2.1.3.min.js'></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
-	<script src='https://code.jquery.com/jquery-2.1.3.min.js'></script>
 	<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
     <script type="text/javascript" src="https://rawgit.com/rmxdave/phnx/master/lib/OAuth/OAuth.js"></script>
     <script type="text/javascript" src="https://rawgit.com/rmxdave/phnx/master/lib/OAuth/SHA1.js"></script>
@@ -19,11 +20,11 @@
 <!-- Global Header Section -->
 <div class="row">
 	<div class="col">
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default" id="global-header">
 		  <div class="container-fluid">
 		    <div class="navbar-header" id="header">
 		      <a class="navbar-brand" href="#">
-		        <img alt="Yelp Clone">
+		        <img src="assets/images/pley.png" alt="Yelp Clone" height="50" id="homeModal">
 		      </a>
 	    </div>
 	  </div>
@@ -39,7 +40,7 @@
 			<div class="row">
 				<!-- Left Map Section -->
 				<div class="col-sm-4">
-					<div id="map"></div>
+						<div id="map"></div>
     			</div>
 				<!-- Main Content Section -->
 				<div class="col-sm-8">
@@ -49,10 +50,10 @@
 							<div class="panel panel-default">
 							  <div class="panel-body">
 								    <div class="navbar-form navbar-center" role="search" >
-									  <div class="form-group">
-									    <input type="text" class="form-control" placeholder="Enter Location Name or Zipcode" id="location-input">
+									  <div class="form-group" id="page-form-group">
+									    <input type="text" class="form-control" placeholder="Enter new city or zipcode" id="page-location-input">
 									  </div>
-									  <button class="btn btn-default" id=search-button>Search</button>
+									  <button class="btn btn-default" id="page-search-button">Search</button>
 									</div>
 						  		</div>
 							</div>
@@ -72,6 +73,46 @@
 
 </div>
 	
+
+
+<!-- The Modal -->
+<div id="searchModal" class="modal">
+	<div class="modal-content">
+	  <!-- Modal content -->
+		<div class="row">
+		  	<div class="col">
+				<div class="modal-header">
+				    <span class="close">×</span>
+				    <img src="assets/images/pley.png" alt="Yelp Clone" height="50">
+				</div>
+			</div>
+		</div>		
+		<div class="row">
+			<div class="col">
+				<div class="modal-body">
+					<h2>Find Great Local Businesses</h2>
+			    	<div class="panel panel-default">
+						<div class="panel-body" id=modal-search-panel>
+					    	<div class="navbar-form navbar-center" role="search">
+						    	<div class="form-group" id="modal-form-group">
+									<input type="text" class="form-control find-input" id="modal-find-input" 	placeholder="Type of Business (e.g Restaurants, Plumbers, Roofers...)">
+									<br>
+									<br>
+							     	<input type="text" class="form-control" placeholder="City Name or Zipcode" id="modal-near-input">
+							     	<br>
+							     	<br>
+							     	<button class="btn btn-default" id="search-button modal-search-btn">Search</button>
+							 	</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	   		
+  	</div>
+</div>
+  	
+  
 
 <script src="assets/javascript/plumber.js"></script>
 <script async defer
