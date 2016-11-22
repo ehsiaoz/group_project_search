@@ -187,11 +187,11 @@ function resultBuilder(yelpObject) {
 		// console.log(business.snippet_text);
 		// console.log(business.thumb_url);
 
-		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\'>" + business.name + "</h4></a>";
+		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\' id=\"nameh4\">" + business.name + "</h4></a>";
 		var bizSnippet = "<p>\"" + business.snippet_text + "\"</p>";
-		var bizPhone = "<p>(tel) " + business.phone + "</p>";
+		var bizPhone = "<p><img src=\"assets/images/phone.jpg\" height=\"15\"> " + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
-		var reviewStars = "<span class=\"stars\">" + business.rating + "</span>"
+		var reviewStars = "<span class=\"stars\" style=\"height: 22px\">" + business.rating + "</span>"
 
 		// console.log("This is bizName: " + bizName);
 		// console.log("This is bizPhone: ", bizPhone);
@@ -199,7 +199,7 @@ function resultBuilder(yelpObject) {
 		var businessListing = $('<div>').addClass('row result-card').append(
 								bizName,
 								"<div class='col-xs-3' id='thumbnail'>"+ thumbnail + "</div>" + 
-								"<div class='col-xs-9' id='mainText'>"+ bizSnippet + bizPhone + reviewStars + "</div>");
+								"<div class='col-xs-9' id='mainText'>"+ reviewStars + bizSnippet + bizPhone  + "</div>");
 
 		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
  		console.log(reviewStars);
