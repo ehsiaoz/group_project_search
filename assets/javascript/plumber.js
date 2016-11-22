@@ -237,8 +237,8 @@ function resultBuilder(yelpObject) {
 		
 		var businessListing = $('<div>').addClass('row result-card').append(
 								bizName,
-								"<div class='col-xs-3' id='thumbnail'>"+ thumbnail + "</div>" + 
-								"<div class='col-xs-9' id='mainText'>"+ reviewStars + bizSnippet + bizPhone  + "</div>");
+								"<div class='col-xs-4 col-sm-2 col-md-3 col-lg-3' id='thumbnail'>"+ thumbnail + "</div>" + 
+								"<div class='col-xs-7 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-7 col-md-offset-2 col-lg-8 col-lg-offset-0' id='mainText'>"+ reviewStars + bizSnippet + bizPhone  + "</div>");
 
 		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
  		console.log(reviewStars);
