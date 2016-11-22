@@ -17,7 +17,10 @@ $(document).ready(function() {
 	//Search Button on page
 	$('#page-search-button').on('click', function onclick() {
 
+		$('#form-error-msg').html("");
+
 		if ($('#modal-find-input').val().trim() === "" || $('#page-location-input').val().trim() === "") {
+
 
 			$('#form-error-msg').html("* Required Field");
 		}
@@ -41,6 +44,40 @@ $(document).ready(function() {
 
 	//Search Button in modal
 	$('#search-button-modal').on('click', function onclick() {
+
+		var testFind = $('#modal-find-input').val().trim();
+		var testNear = $('#modal-near-input').val().trim();
+		var letters = /^[A-Za-z]+$/;
+
+		console.log("this is testfind: " + testFind);
+
+		$('#modal-find-error-msg').html("");
+		$('#modal-near-error-msg').html("");
+		
+		if (testFind === "") {
+
+			$('#modal-find-error-msg').html("* Required Field");
+		}
+
+		// if(testFind.match(letters)) {
+
+  //       	$('#modal-find-error-msg').html("* Input must be alpha-numeric");
+    
+  //   	}
+
+		if (testNear === "") {
+
+			$('#modal-near-error-msg').html("* Required Field");
+		}
+
+		// if(testNear.match(letters)) {
+
+  //       	$('#modal-find-error-msg').html("* Input must be alpha-numeric");
+    
+  //   	}
+
+		else {
+
 		$('#search-results').empty();
 		locationsGeo = [];
 		modal.style.display = "none";
@@ -48,6 +85,8 @@ $(document).ready(function() {
 		searchTerm = $('#modal-find-input').val().trim();
 		searchLocation = $('#modal-near-input').val().trim(); 
 		var searchLatitude = searchLongitude = '';
+
+		}
 
 		// if(searchTerm == ''){
 		// 	console.log("No search term entered..");
