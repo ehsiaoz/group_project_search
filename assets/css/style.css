@@ -30,6 +30,10 @@
 
 
 /*search bar elements==================================*/
+.panel-default {
+	margin-bottom: 5px;
+}
+
 .panel-body {
 	background-color: #fc0;
 }
@@ -64,6 +68,9 @@
 
 /*main content elements==================================*/
 
+#search-title {
+
+}
 
 .row {
     margin-right: 0px;
@@ -88,6 +95,17 @@
 .thumbnail {
 	max-height: 110px;
 	max-width: 110px;
+}
+
+span.stars, span.stars span {
+    display: block;
+    background: url(../images/stars.png) 0 -16px repeat-x;
+    width: 80px;
+    height: 16px;
+}
+
+span.stars span {
+    background-position: 0 0;
 }
 
 

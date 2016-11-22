@@ -2,6 +2,10 @@
 
 var locationsGeo = [];
 var searchLocation = "";
+var searchTerm = "";
+var queryLocationGeo = {};
+var displayAddress = " ";
+var numResults = "";
 
 
 //Functions========================================================================================
@@ -24,7 +28,7 @@ $(document).ready(function() {
 			$('#search-area').empty();
 			locationsGeo = [];
 
-			var searchTerm = $('#modal-find-input').val().trim();
+			searchTerm = $('#modal-find-input').val().trim();
 			searchLocation = $('#page-location-input').val().trim();
 
 			console.log("You are searching for " + searchTerm + " near " + searchLocation);
@@ -41,7 +45,7 @@ $(document).ready(function() {
 		locationsGeo = [];
 		modal.style.display = "none";
 
-		var searchTerm = $('#modal-find-input').val().trim();
+		searchTerm = $('#modal-find-input').val().trim();
 		searchLocation = $('#modal-near-input').val().trim(); 
 		var searchLatitude = searchLongitude = '';
 
@@ -131,6 +135,31 @@ window.onclick = function(event) {
 
 function resultBuilder(yelpObject) {
 
+	var querylocationLatitude = yelpObject.region.center.latitude;
+	var querylocationLongitude = yelpObject.region.center.longitude;
+	console.log("This is querylocationLongitude: " + querylocationLongitude);
+	queryLocationGeo = {
+		lat: querylocationLatitude,
+		long: querylocationLongitude,
+	};
+
+	console.log("This is queryLocationGeo: ", queryLocationGeo);
+
+	//Call function to look up display name of address
+	addressLookup(querylocationLatitude, querylocationLongitude);
+
+	console.log("This is display address in yelp function: " + displayAddress);
+
+
+	numResults = yelpObject.businesses.length;
+	console.log("This is numResults: " + numResults);
+	//Create <h2> displaying user search and # of results
+	// $('#search-title').html("Best " +
+	// 					searchTerm + " in " + displayAddress + 
+	// 					" - " + 
+	// 					yelpObject.businesses.length + " Results");
+	
+
 	console.log("ResultBuilder: ", yelpObject);
 
 	//Create search result cards
@@ -162,6 +191,7 @@ function resultBuilder(yelpObject) {
 		var bizSnippet = "<p>\"" + business.snippet_text + "\"</p>";
 		var bizPhone = "<p>(tel) " + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
+		var reviewStars = "<span class=\"stars\">" + business.rating + "</span>"
 
 		// console.log("This is bizName: " + bizName);
 		// console.log("This is bizPhone: ", bizPhone);
@@ -169,16 +199,22 @@ function resultBuilder(yelpObject) {
 		var businessListing = $('<div>').addClass('row result-card').append(
 								bizName,
 								"<div class='col-xs-3' id='thumbnail'>"+ thumbnail + "</div>" + 
-								"<div class='col-xs-9' id='mainText'>"+ bizSnippet + bizPhone +"</div>");
+								"<div class='col-xs-9' id='mainText'>"+ bizSnippet + bizPhone + reviewStars + "</div>");
 
 		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
- 			
+ 		console.log(reviewStars);
+
+ 		
 
 	//Append Search results to the DOM
 	$('#search-results').append(businessListing);
 	
 
 	});
+
+	$(function() {
+		    $('span.stars').stars();
+		});	
 
 	//Create map markers on google map
 	var mapDiv = document.getElementById('map'); 
@@ -269,6 +305,7 @@ function yelpSearch (searchTerm, searchLocation) {
 
 			console.log("this is data inside request: ", data);
 			resultBuilder(data);
+
 		})
 
 		//if the request fails append error message with error code.
@@ -297,7 +334,6 @@ function yelpSearch (searchTerm, searchLocation) {
 		//regardless or whether call was successful or failed..console.log response.
 		.always(function(data){
 			console.log(data);
-
 		});
 };
 
@@ -321,28 +357,56 @@ function initMap() {
      
 }
 
+function addressLookup(lat, long) {
+
+		var latlng = lat + "," + long;
+		console.log("this is latlng in addressLookup: " + latlng);
+		var queryURL = "https:/maps.googleapis.com/maps/api/geocode/json?latlng=" + latlng 
+						 + "&key=AIzaSyBbmAefrpT0YSqgufXAyKg8Stl1CmxqZpI";
+
+		$.ajax({
+				url: queryURL, 
+				method: 'GET'
+			}).done(function(response) {
+			console.log("this is response from addressLookUp: ", response);
+			var formatted_address = response.results[0].formatted_address;
+			var splitAddress = formatted_address.split(",");
+			var rawDisplayAddress = splitAddress[1] + "," + splitAddress[2];
+			displayAddress = rawDisplayAddress.trim();
+			console.log(displayAddress);
+
+			$('#search-title').html("Best " +
+						searchTerm + " in " + displayAddress + 
+						" - " + 
+						numResults + " Results");
+
+			return displayAddress;
+			
+		});
+
+	
+}
+
+//Convert business rating to stars====================
+$.fn.stars = function() {
+    return $(this).each(function() {
+        // Get the value
+        var val = parseFloat($(this).html());
+        // Make sure that the value is in 0 - 5 range, multiply to get width
+        val = Math.round(val * 2) / 2; /* To round to nearest half */
+        var size = Math.max(0, (Math.min(5, val))) * 16;
+        // Create stars holder
+        var $span = $('<span />').width(size);
+        // Replace the numerical value with stars
+        $(this).html($span);
+    });
+}
+
+
+
+//=============================================
+
 window.onload = initMap;
 
-//Create a google map with businesses plotted
-// function initMap() {
-//         var mapDiv = document.getElementById('map'); 
-//         var mapOptions = {
-//         	center: new google.maps.LatLng (41.9464283, 41.9464283),	
-// 	        zoom: 5,
-//           	mapTypeId: google.maps.mapTypeId.ROADMAP
-//         };
-//         var map = new google.maps.Map(mapDiv, mapOptions);
-        
-//         var locations = [];
-//  		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9464283, 41.9464283)} );
-//  		locations.push ( {name:"", latlng: new google.maps.LatLng(41.9539560, -87.713707});
 
-//         // var bounds = new google.maps.latlngBounds ();
-//         // for (var i=0; i<locations.length; i++) {
-//         // 	var marker = new google.maps.Marker({position: location[i].latlng, map:map, title:location[i].name});
-//         // 	bounds.extend (locations[i].latlng);
-
-//         // }
-//         // map.fitBounds(bounds);
-// }
 
