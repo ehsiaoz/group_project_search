@@ -12,38 +12,73 @@ var numResults = "";
 
 $(document).ready(function() {
 
-	//Buttons===========================
+	//clicking enter to trigger page search button click
+	$("input").keypress(function(event) {
 
-	//Search Button on page
-	$('#page-search-button').on('click', function onclick() {
+	  // listen to see that key was "enter."
+	  if (event.which === 13) {
 
-		$('#form-error-msg').html("");
-
-		if ($('#modal-find-input').val().trim() === "" || $('#page-location-input').val().trim() === "") {
-
-
-			$('#form-error-msg').html("* Required Field");
-		}
-
-		else {
-
-			$('#search-results').empty();
-			$('#search-area').empty();
-			locationsGeo = [];
-
-			searchTerm = $('#modal-find-input').val().trim();
-			searchLocation = $('#page-location-input').val().trim();
-
-			console.log("You are searching for " + searchTerm + " near " + searchLocation);
-			yelpSearch(searchTerm, searchLocation);
-
-		};
-
-		
+	    // If so, run addTask.
+	    pagesearchclick();
+	  }
 	});
 
-	//Search Button in modal
-	$('#search-button-modal').on('click', function onclick() {
+//Buttons===========================
+
+//Search Button on page
+$('#page-search-button').on('click', pagesearchclick);
+
+
+//Search Button in modal
+$('#search-button-modal').on('click', modalsearchclick);
+
+
+//Forms==============================
+
+//Autoselection value in location input field on click
+ $('#page-location-input').click( function highlight() {
+    $(this).select();
+  });
+
+$('#modal-find-input').click( function highlight() {
+    $(this).select();
+  });
+
+$('#modal-near-input').click( function highlight() {
+    $(this).select();
+  });
+
+//Modal================================
+// Get the modal
+var modal = document.getElementById('searchModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("homeModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+//Function for Search Button click in Modal
+
+function modalsearchclick() {
 
 		var testFind = $('#modal-find-input').val().trim();
 		var testNear = $('#modal-near-input').val().trim();
@@ -57,6 +92,8 @@ $(document).ready(function() {
 		if (testFind === "") {
 
 			$('#modal-find-error-msg').html("* Required Field");
+
+			return;
 		}
 
 		// if(testFind.match(letters)) {
@@ -68,6 +105,8 @@ $(document).ready(function() {
 		if (testNear === "") {
 
 			$('#modal-near-error-msg').html("* Required Field");
+
+			return;
 		}
 
 		// if(testNear.match(letters)) {
@@ -114,60 +153,44 @@ $(document).ready(function() {
 
 		// }
 
+		}
+
+
+
+
+//document.ready
 });
 
 
+//Functions===============================================
 
-//Forms==============================
+//Function for Search Button click on Page
+function pagesearchclick() {
 
-//Autoselection value in location input field on click
- $('#page-location-input').click( function highlight() {
-    $(this).select();
-  });
+	$('#form-error-msg').html("");
 
-$('#modal-find-input').click( function highlight() {
-    $(this).select();
-  });
+	if ($('#modal-find-input').val().trim() === "" || $('#page-location-input').val().trim() === "") {
 
-$('#modal-near-input').click( function highlight() {
-    $(this).select();
-  });
 
-//Modal================================
-// Get the modal
-var modal = document.getElementById('searchModal');
+		$('#form-error-msg').html("* Required Field");
+	}
 
-// Get the button that opens the modal
-var btn = document.getElementById("homeModal");
+	else {
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+		$('#search-results').empty();
+		$('#search-area').empty();
+		locationsGeo = [];
 
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-    modal.style.display = "block";
-}
+		searchTerm = $('#modal-find-input').val().trim();
+		searchLocation = $('#page-location-input').val().trim();
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
+		console.log("You are searching for " + searchTerm + " near " + searchLocation);
+		yelpSearch(searchTerm, searchLocation);
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	}
 }
 
 
-
-
-
-
-
-
-});
 
 
 //Function to build and append search results returned from yelp search api to the DOM
