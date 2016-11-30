@@ -263,7 +263,11 @@ function resultBuilder(yelpObject) {
 								"<div class='col-xs-4 col-sm-2 col-md-3 col-lg-3' id='thumbnail'>"+ thumbnail + "</div>" + 
 								"<div class='col-xs-7 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-7 col-md-offset-2 col-lg-8 col-lg-offset-0' id='mainText'>"+ reviewStars + bizSnippet + bizPhone  + "</div>");
 
-		locationsGeo.push ( {latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng)} );
+		locationsGeo.push ({
+			name: business.name, 
+			latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng),
+			content: bizName + thumbnail
+		});
  		console.log(reviewStars);
 
  		
@@ -290,20 +294,21 @@ function resultBuilder(yelpObject) {
 	var bounds = new google.maps.LatLngBounds();
 	var infowindow = new google.maps.InfoWindow();  
 
-    for (var i=0; i<locationsGeo.length; i++) {
-    	var marker = new google.maps.Marker({position: locationsGeo[i].latlng, map:map});
+   locationsGeo.forEach(function(loc, i){
+  
+    	var infowindow = new google.maps.InfoWindow({
+          content: loc.content
+        });
+     
+    	var marker = new google.maps.Marker({position: loc.latlng, map:map, title:loc.name});
 
-	  //extend the bounds to include each marker's position
-	  bounds.extend(marker.position);
+	    bounds.extend(marker.position);
 
-	  google.maps.event.addListener(marker, 'click', (function(marker, i) {
-	    return function() {
-	      infowindow.setContent(locationsGeo[i][0]);
-	      infowindow.open(map, marker);
-	    }
-	  })(marker, i));
-	}
-
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+       
+     });
 	//now fit the map to the newly inclusive bounds
 	map.fitBounds(bounds);      
 	
