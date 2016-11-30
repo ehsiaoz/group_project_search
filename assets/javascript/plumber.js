@@ -82,13 +82,12 @@ function modalsearchclick() {
 
 		var testFind = $('#modal-find-input').val().trim();
 		var testNear = $('#modal-near-input').val().trim();
-		var letters = /^[A-Za-z]+$/;
-
-		console.log("this is testfind: " + testFind);
+		var letters = /^[a-z0-9]+$/i;
 
 		$('#modal-find-error-msg').html("");
 		$('#modal-near-error-msg').html("");
 		
+		//Input Validation
 		if (testFind === "") {
 
 			$('#modal-find-error-msg').html("* Required Field");
@@ -96,11 +95,12 @@ function modalsearchclick() {
 			return;
 		}
 
-		// if(testFind.match(letters)) {
+		if(letters.test(testFind) === false) {
 
-  //       	$('#modal-find-error-msg').html("* Input must be alpha-numeric");
-    
-  //   	}
+        	$('#modal-find-error-msg').html("* Input must be alpha-numeric");
+    		
+    		return;
+    	}
 
 		if (testNear === "") {
 
@@ -109,11 +109,12 @@ function modalsearchclick() {
 			return;
 		}
 
-		// if(testNear.match(letters)) {
+		if(letters.test(testNear) === false) {
 
-  //       	$('#modal-find-error-msg').html("* Input must be alpha-numeric");
-    
-  //   	}
+        	$('#modal-near-error-msg').html("* Input must be alpha-numeric");
+    		
+    		return;
+    	}
 
 		else {
 
@@ -147,7 +148,6 @@ function modalsearchclick() {
 		// 		// error handling code here
 		// 		return;
 		// 	}
-			console.log("You are searching for " + searchTerm + " near " + searchLocation);
 			yelpSearch(searchTerm, searchLocation);
 
 
@@ -168,11 +168,18 @@ function modalsearchclick() {
 function pagesearchclick() {
 
 	$('#form-error-msg').html("");
+	var letters = /^[a-z0-9]+$/i;
 
+	//Input validation
 	if ($('#modal-find-input').val().trim() === "" || $('#page-location-input').val().trim() === "") {
 
 
 		$('#form-error-msg').html("* Required Field");
+	}
+
+	else if (letters.test($('#page-location-input').val().trim()) === false) { 
+			 
+		$('#form-error-msg').html("* Input must be alpha-numeric");
 	}
 
 	else {
@@ -184,7 +191,6 @@ function pagesearchclick() {
 		searchTerm = $('#modal-find-input').val().trim();
 		searchLocation = $('#page-location-input').val().trim();
 
-		console.log("You are searching for " + searchTerm + " near " + searchLocation);
 		yelpSearch(searchTerm, searchLocation);
 
 	}
@@ -199,30 +205,17 @@ function resultBuilder(yelpObject) {
 
 	var querylocationLatitude = yelpObject.region.center.latitude;
 	var querylocationLongitude = yelpObject.region.center.longitude;
-	console.log("This is querylocationLongitude: " + querylocationLongitude);
+
 	queryLocationGeo = {
 		lat: querylocationLatitude,
 		long: querylocationLongitude,
 	};
 
-	console.log("This is queryLocationGeo: ", queryLocationGeo);
-
 	//Call function to look up display name of address
 	addressLookup(querylocationLatitude, querylocationLongitude);
 
-	console.log("This is display address in yelp function: " + displayAddress);
-
-
+	//To display how many search results were returned
 	numResults = yelpObject.businesses.length;
-	console.log("This is numResults: " + numResults);
-	//Create <h2> displaying user search and # of results
-	// $('#search-title').html("Best " +
-	// 					searchTerm + " in " + displayAddress + 
-	// 					" - " + 
-	// 					yelpObject.businesses.length + " Results");
-	
-
-	console.log("ResultBuilder: ", yelpObject);
 
 	//Create search result cards
 	yelpObject.businesses.forEach(function(biz, i){
@@ -238,26 +231,12 @@ function resultBuilder(yelpObject) {
 			phone: yelpObject.businesses[i].display_phone,
 			url: yelpObject.businesses[i].url,
 		}
-		
-		// console.log(biz);
-		// console.log(business.name);
-		// console.log(business.address);
-		// console.log(business.rating);
-		// console.log(business.geo_lat);
-		// console.log(business.geo_lng);
-		// console.log(business.phone);
-		// console.log(business.snippet_text);
-		// console.log(business.thumb_url);
 
 		var bizName = "<a href=\"" + business.url + "\"><h4 class=\'biz-title\' id=\"nameh4\">" + business.name + "</h4></a>";
 		var bizSnippet = "<p>\"" + business.snippet_text + "\"</p>";
 		var bizPhone = "<p><img src=\"assets/images/phone.jpg\" height=\"15\"> " + business.phone + "</p>";
 		var thumbnail = "<img class = thumbnail src=\"" + business.thumb_url + "\">";
 		var reviewStars = "<span class=\"stars\" style=\"height: 22px\">" + business.rating + "</span>"
-
-		// console.log("This is bizName: " + bizName);
-		// console.log("This is bizPhone: ", bizPhone);
-		
 		var businessListing = $('<div>').addClass('row result-card').append(
 								bizName,
 								"<div class='col-xs-4 col-sm-2 col-md-3 col-lg-3' id='thumbnail'>"+ thumbnail + "</div>" + 
@@ -268,9 +247,7 @@ function resultBuilder(yelpObject) {
 			latlng: new google.maps.LatLng(business.geo_lat, business.geo_lng),
 			content: bizName + thumbnail
 		});
- 		console.log(reviewStars);
 
- 		
 
 	//Append Search results to the DOM
 	$('#search-results').append(businessListing);
@@ -278,6 +255,7 @@ function resultBuilder(yelpObject) {
 
 	});
 
+	//Convert star ratings into stars
 	$(function() {
 		    $('span.stars').stars();
 		});	
@@ -414,14 +392,6 @@ function initMap() {
         };
         var map = new google.maps.Map(mapDiv, mapOptions);
         
- 		// locationsGeo.push ( {latlng: new google.maps.LatLng(41.9464283, -87.7074089)} );
- 		// locationsGeo.push ( {latlng: new google.maps.LatLng(41.9539560, -87.713707)});
- 		console.log("Array");
- 		console.log(locationsGeo);
-
-        
-        // map.fitBounds(bounds);
-     
 }
 
 function addressLookup(lat, long) {
